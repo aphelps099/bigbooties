@@ -8,53 +8,38 @@ import os
 # Set BOT_TOKEN as an environment variable (never commit tokens to GitHub)
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 
-# Animation frames - seed grows into pixelated booty
-FRAMES = [
-    # Frame 1: bare ground
+# Growing animation frames
+GROW_FRAMES = [
     (
         "```\n"
-        "\n"
-        "\n"
-        "\n"
-        "\n"
-        "\n"
+        "\n\n\n\n\n"
         "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
         "```"
     ),
-    # Frame 2: seed
     (
         "```\n"
-        "\n"
-        "\n"
-        "\n"
-        "\n"
+        "\n\n\n\n"
         "        🌰\n"
         "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
         "```"
     ),
-    # Frame 3: sprout
     (
         "```\n"
-        "\n"
-        "\n"
-        "\n"
+        "\n\n\n"
         "        |\n"
         "        |\n"
         "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
         "```"
     ),
-    # Frame 4: growing
     (
         "```\n"
-        "\n"
-        "\n"
+        "\n\n"
         "       \\|/\n"
         "        |\n"
         "        |\n"
         "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
         "```"
     ),
-    # Frame 5: blooming - small shape
     (
         "```\n"
         "\n"
@@ -65,41 +50,13 @@ FRAMES = [
         "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
         "```"
     ),
-    # Frame 6: transforming
-    (
-        "```\n"
-        "\n"
-        "    ████  ████\n"
-        "   ██████████████\n"
-        "   ██████████████\n"
-        "    ████████████\n"
-        "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
-        "```"
-    ),
-    # Frame 7: the booty emerges
-    (
-        "```\n"
-        "    ████    ████\n"
-        "  ████████████████\n"
-        "  ██████████████████\n"
-        "  ██████████████████\n"
-        "   ████████████████\n"
-        "     ████    ████\n"
-        "```"
-    ),
-    # Frame 8: FULL BOOTY - big pixels
-    (
-        "```\n"
-        "   ▓▓▓▓▓▓  ▓▓▓▓▓▓\n"
-        "  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
-        " ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
-        " ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
-        "  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
-        "   ▓▓▓▓▓▓  ▓▓▓▓▓▓\n"
-        "    ▓▓▓▓    ▓▓▓▓\n"
-        "```"
-    ),
-    # Frame 9: sparkle finale
+]
+
+GROW_DELAYS = [1.0, 1.0, 0.8, 0.8, 0.7]
+
+# The booty showcase — many different types!
+BOOTIES = [
+    # Classic thicc
     (
         "```\n"
         " ✨ ▓▓▓▓▓▓  ▓▓▓▓▓▓ ✨\n"
@@ -108,14 +65,130 @@ FRAMES = [
         " ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
         "  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
         "   ▓▓▓▓▓▓  ▓▓▓▓▓▓\n"
-        "    ▓▓▓▓    ▓▓▓▓  🍑\n"
+        "    ▓▓▓▓    ▓▓▓▓\n"
+        "```\n"
+        "🍑 T H I C C   C L A S S I C 🍑"
+    ),
+    # Bubble butt
+    (
+        "```\n"
+        "    @@@@    @@@@\n"
+        "  @@@@@@@@@@@@@@@@\n"
+        " @@@@@@@@@@@@@@@@@@\n"
+        "@@@@@@@@@@@@@@@@@@@@\n"
+        "@@@@@@@@@@@@@@@@@@@@\n"
+        " @@@@@@@@@@@@@@@@@@\n"
+        "  @@@@@@    @@@@@@\n"
+        "```\n"
+        "🫧 B U B B L E   B U T T 🫧"
+    ),
+    # Pixelated peach
+    (
+        "```\n"
+        "    ████    ████\n"
+        "  ██░░████████░░██\n"
+        " ██░░░░██████░░░░██\n"
+        " ██░░░░██████░░░░██\n"
+        "  ██░░████████░░██\n"
+        "   ████    ████\n"
+        "    ██      ██\n"
+        "```\n"
+        "🎮 P I X E L   P E A C H 🎮"
+    ),
+    # Heart-shaped
+    (
+        "```\n"
+        "   ♥♥♥♥    ♥♥♥♥\n"
+        "  ♥♥♥♥♥♥♥♥♥♥♥♥♥♥\n"
+        " ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥\n"
+        " ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥\n"
+        "  ♥♥♥♥♥♥♥♥♥♥♥♥♥♥\n"
+        "    ♥♥♥♥♥♥♥♥♥♥\n"
+        "      ♥♥♥♥♥♥\n"
+        "```\n"
+        "❤️ H E A R T   B O O T Y ❤️"
+    ),
+    # Jiggly
+    (
+        "```\n"
+        "  ~ ████  ████ ~\n"
+        " ~ ██████████████ ~\n"
+        "~ ████████████████ ~\n"
+        "~ ████████████████ ~\n"
+        " ~ ██████████████ ~\n"
+        "  ~ ████  ████ ~\n"
+        "   ~ ██    ██ ~\n"
+        "```\n"
+        "🌊 J I G G L Y   J E L L Y 🌊"
+    ),
+    # Tiny but mighty
+    (
         "```\n"
         "\n"
-        "🍑 B O O T Y   D E L U X E 🍑"
+        "\n"
+        "      ()  ()\n"
+        "     ()()()()\n"
+        "      ()()()\n"
+        "       ()()\n"
+        "\n"
+        "```\n"
+        "🐜 S M O L   B O O T Y 🐜"
+    ),
+    # Extra wide
+    (
+        "```\n"
+        "  ██████████  ██████████\n"
+        " ████████████████████████\n"
+        "██████████████████████████\n"
+        "██████████████████████████\n"
+        " ████████████████████████\n"
+        "  ██████████  ██████████\n"
+        "   ████████    ████████\n"
+        "```\n"
+        "🏋️ E X T R A   W I D E 🏋️"
+    ),
+    # Galaxy booty
+    (
+        "```\n"
+        "   .*★*..    ..*★*.\n"
+        "  ★*....*★★★*....*★\n"
+        " ★*......*★★*......*★\n"
+        " ★*......*★★*......*★\n"
+        "  ★*....*★  ★*....*★\n"
+        "   .*★*.      .*★*.\n"
+        "    .*★.      .*★.\n"
+        "```\n"
+        "🌌 G A L A X Y   B O O T Y 🌌"
+    ),
+    # Robo-booty
+    (
+        "```\n"
+        "   [####]  [####]\n"
+        "  [################]\n"
+        " [##################]\n"
+        " [##################]\n"
+        "  [################]\n"
+        "   [####]  [####]\n"
+        "    [##]    [##]\n"
+        "```\n"
+        "🤖 R O B O   B O O T Y 🤖"
+    ),
+    # Mega booty finale
+    (
+        "```\n"
+        " 🔥▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓▓▓🔥\n"
+        "  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
+        " ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
+        "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
+        " ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓\n"
+        "  ▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓▓▓\n"
+        "   ▓▓▓▓▓▓    ▓▓▓▓▓▓\n"
+        "```\n"
+        "🔥 M E G A   B O O T Y 🔥"
     ),
 ]
 
-DELAYS = [1.0, 1.0, 0.8, 0.8, 0.7, 0.7, 0.6, 0.5, 0.0]
+BOOTY_DELAY = 1.2  # seconds between each booty in the showcase
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -134,11 +207,20 @@ async def grow(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await asyncio.sleep(1.2)
 
-    for i, frame in enumerate(FRAMES):
+    # Phase 1: grow animation
+    for i, frame in enumerate(GROW_FRAMES):
         try:
             await msg.edit_text(frame, parse_mode="Markdown")
-            if DELAYS[i] > 0:
-                await asyncio.sleep(DELAYS[i])
+            if GROW_DELAYS[i] > 0:
+                await asyncio.sleep(GROW_DELAYS[i])
+        except Exception:
+            pass
+
+    # Phase 2: cycle through the booty showcase
+    for booty in BOOTIES:
+        try:
+            await msg.edit_text(booty, parse_mode="Markdown")
+            await asyncio.sleep(BOOTY_DELAY)
         except Exception:
             pass
 
